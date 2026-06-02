@@ -1,0 +1,44 @@
+# === Python Cache & Compiled Files ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# === Virtual Environments ===
+.venv/
+venv/
+ENV/
+env/
+
+# === Environment Variables & Secrets ===
+.env
+.env.*
+!.env.example
+
+# === FastAPI / Databases ===
+*.db
+*.sqlite3
+
+# === Testing & Coverage ===
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+
+# === Type Checking ===
+.mypy_cache/
+.pyre/
+
+# === IDEs & Editors ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# === Operating System Files ===
+.DS_Store
+Thumbs.db
