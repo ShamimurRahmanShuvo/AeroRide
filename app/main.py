@@ -1,5 +1,10 @@
 from fastapi import FastAPI
 
+from app.core.database import Base, get_engine
+from app.core.auth import create_demo_admin
+
+from app.routes.aero_user_routes import router as aero_user_router
+
 
 def create_app() -> FastAPI:
     app = FastAPI(
@@ -10,6 +15,16 @@ def create_app() -> FastAPI:
         docs_url="/docs",
         redoc_url="/redoc"
     )
+
+    app.include_router(aero_user_router)
+
+    @app.on_event("startup")
+    def on_startup():
+        # Create database tables
+        engine = get_engine()
+        Base.metadata.create_all(bind=engine)
+        # Create a demo admin user if it doesn't exist
+        create_demo_admin()
 
     @app.get("/")
     def read_root():
