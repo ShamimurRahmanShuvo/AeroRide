@@ -6,3 +6,7 @@ pydantic
 alembic
 pytest
 pytest-asyncio
+python-jwt
+passlib
+argon2_cffi
+python-jose
