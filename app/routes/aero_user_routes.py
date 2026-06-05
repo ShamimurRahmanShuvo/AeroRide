@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -7,9 +5,8 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.models.aero_user_model import AeroUser, Role, UserProfile, UserRole
-from app.schemas.aero_user_schema import (RegisterUserSchema, LoginUserSchema, TokenResponseSchema, UserProfileSchema,
-                                          CurrentUserResponseSchema, RoleResponseSchema, RoleRequestSchema,
-                                          UserRoleAssignmentSchema)
+from app.schemas.aero_user_schema import (RegisterUserSchema, TokenResponseSchema, UserProfileSchema,
+                                          CurrentUserResponseSchema)
 from app.core.auth import hash_password, verify_password, create_access_token, get_current_user
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])

@@ -4,6 +4,7 @@ from app.core.database import Base, get_engine
 from app.core.auth import create_demo_admin
 
 from app.routes.aero_user_routes import router as aero_user_router
+from app.routes.aero_admin_routes import router as aero_admin_router
 
 
 def create_app() -> FastAPI:
@@ -17,6 +18,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(aero_user_router)
+    app.include_router(aero_admin_router)
 
     @app.on_event("startup")
     def on_startup():
