@@ -2,7 +2,6 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from datetime import datetime
 
 from app.core.database import get_db
 from app.models.aero_user_model import AeroUser, Role, UserRole
@@ -13,7 +12,7 @@ from app.schemas.aero_user_schema import (
     UserRoleAssignmentSchema,
     UserProfileSchema
 )
-from app.core.auth import get_current_user, require_role
+from app.core.auth import require_role
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
 
@@ -21,7 +20,7 @@ router = APIRouter(prefix="/admin", tags=["Admin"])
 @router.post("/create-role", response_model=RoleRequestSchema)
 def create_role(role_data: RoleRequestSchema,
                 db: Session = Depends(get_db),
-                current_user= Depends(require_role("admin"))):
+                current_user=Depends(require_role("admin"))):
     """Create a new role (admin only)."""
     existing_role = db.query(Role).filter(Role.name == role_data.name).first()
     if existing_role:
@@ -36,7 +35,7 @@ def create_role(role_data: RoleRequestSchema,
 
 
 @router.get("/roles", response_model=List[RoleResponseSchema])
-def get_roles(db: Session = Depends(get_db), current_user= Depends(require_role("admin"))):
+def get_roles(db: Session = Depends(get_db), current_user=Depends(require_role("admin"))):
     """Get a list of all roles (admin only)."""
     roles = db.query(Role).all()
     return roles
@@ -45,7 +44,7 @@ def get_roles(db: Session = Depends(get_db), current_user= Depends(require_role(
 @router.post("/assign-role", response_model=UserRoleAssignmentSchema)
 def assign_role_to_user(assignment_data: UserRoleAssignmentSchema,
                         db: Session = Depends(get_db),
-                        current_user= Depends(require_role("admin"))):
+                        current_user=Depends(require_role("admin"))):
     """Assign a role to a user (admin only)."""
     user = db.query(AeroUser).filter(AeroUser.id == assignment_data.user_id).first()
     if not user:
@@ -73,7 +72,7 @@ def assign_role_to_user(assignment_data: UserRoleAssignmentSchema,
 @router.get("/users/{user_id}", response_model=CurrentUserResponseSchema)
 def get_user_details(user_id: int,
                      db: Session = Depends(get_db),
-                     current_user= Depends(require_role("admin"))):
+                     current_user=Depends(require_role("admin"))):
     """Get details of a specific user (admin only)."""
     user = db.query(AeroUser).filter(AeroUser.id == user_id).first()
     if not user:
@@ -94,7 +93,7 @@ def get_user_details(user_id: int,
 
 @router.get("/users", response_model=List[CurrentUserResponseSchema])
 def get_all_users(db: Session = Depends(get_db),
-                  current_user= Depends(require_role("admin"))):
+                  current_user=Depends(require_role("admin"))):
     """Get a list of all users (admin only)."""
     users = db.query(AeroUser).all()
     return [
