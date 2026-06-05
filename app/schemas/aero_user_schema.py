@@ -36,7 +36,7 @@ class UserProfileSchema(BaseModel):
     profile_picture_url: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class CurrentUserResponseSchema(BaseModel):
@@ -55,9 +55,12 @@ class RoleResponseSchema(BaseModel):
     id: int
     name: str
 
+    class Config:
+        from_attributes = True
+
 
 class RoleRequestSchema(BaseModel):
-    role_name: str = Field(..., min_length=3, max_length=50)
+    name: str = Field(..., min_length=3, max_length=50)
 
 
 class UserRoleAssignmentSchema(BaseModel):

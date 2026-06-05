@@ -83,7 +83,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 def require_role(*allowed_roles: str):
     """Dependency to require a specific role for access."""
     def role_dependency(current_user: AeroUser = Depends(get_current_user)):
-        user_roles = [user_role.role.name for user_role in current_user.roles]
+        user_roles = [user_role.roles.name for user_role in current_user.roles if user_role.roles]
         if not any(role in allowed_roles for role in user_roles):
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                                 detail="You do not have permission to access this resource",)
