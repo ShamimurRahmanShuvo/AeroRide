@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from .aero_base_schema import TimestampSchema
+from .aero_vehicle_schema import VehicleResponseSchema
 
 
 class DriverCreateSchema(BaseModel):
@@ -12,3 +13,7 @@ class DriverResponseSchema(TimestampSchema):
     license_number: str = Field(..., description="Driver's license number")
     rating: float = Field(..., description="Driver's average rating")
     is_active: bool = Field(..., description="Driver's active status")
+
+
+class DriverDetailResponseSchema(DriverResponseSchema):
+    vehicle: VehicleResponseSchema = Field(..., description="List of vehicles associated with the driver")

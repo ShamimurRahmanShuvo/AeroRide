@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from app.models.aero_enums import VehicleType
 from .aero_base_schema import TimestampSchema
+from .aero_driver_schema import DriverResponseSchema
 
 
 class VehicleCreateSchema(BaseModel):
@@ -23,3 +24,7 @@ class VehicleResponseSchema(TimestampSchema):
     color: str = Field(..., description="Color of the vehicle")
     capacity: int = Field(..., description="Seating capacity of the vehicle")
     vehicle_type: VehicleType = Field(..., description="Type of the vehicle (e.g., Car, Van, SUV)")
+
+
+class VehicleDetailResponseSchema(VehicleResponseSchema):
+    driver: DriverResponseSchema = Field(..., description="Details of the driver associated with the vehicle")
