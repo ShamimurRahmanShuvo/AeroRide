@@ -1,25 +1,23 @@
 from sqlalchemy import String, Boolean, Enum
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from app.models.aero_base_model import AeroBaseModel, TimestampMixin, UUIDMixin
+from app.models.aero_base_model import Base, TimestampMixin, UUIDMixin
 from app.models.aero_enums import UserRole
-# from app.core.database import Base
 
 
-class AeroUser(UUIDMixin, TimestampMixin, AeroBaseModel):
-    __tablename__ = "aero_users"
+class User(UUIDMixin, TimestampMixin, Base):
+    __tablename__ = "users"
 
-    # id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True)
     first_name: Mapped[str] = mapped_column(String(100), nullable=False)
     last_name: Mapped[str] = mapped_column(String(100), nullable=False)
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)
     phone_number: Mapped[str] = mapped_column(String(20), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False)
-    is_validated: Mapped[bool] = mapped_column(Boolean, default=False)
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    driver_profile = relationship("DriverProfile", back_populates="user", uselist=False)
-    rider_bookings = relationship("Booking", back_populates="rider", foreign_keys="Booking.rider_id")
+    driver_profile = relationship("Driver", back_populates="user", uselist=False)
+    customer_bookings = relationship("Booking", back_populates="customer", foreign_keys="Booking.customer_id")
     notifications = relationship("Notification", back_populates="user")
 
 

@@ -1,18 +1,14 @@
-from sqlalchemy import Column, Integer, String, Boolean, Text, DateTime, ForeignKey, UniqueConstraint
-from sqlalchemy.orm import relationship
-from datetime import datetime
-from app.core.database import Base
+from sqlalchemy import String
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from app.models.aero_base_model import Base, UUIDMixin, TimestampMixin
 
 
-class AeroAirport(Base):
-    __tablename__ = "aero_airports"
+class Airport(Base, UUIDMixin, TimestampMixin):
+    __tablename__ = "airports"
 
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
-    code = Column(String(10), unique=True, nullable=False)
-    city = Column(String(100), nullable=False)
-    country = Column(String(100), nullable=False)
-    timezone = Column(String(50), nullable=False)
+    code: Mapped[str] = mapped_column(String(10), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(100), nullable=False)
+    city: Mapped[str] = mapped_column(String(50), nullable=False)
+    country: Mapped[str] = mapped_column(String(50), nullable=False)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    bookings = relationship("Booking", back_populates="airport")

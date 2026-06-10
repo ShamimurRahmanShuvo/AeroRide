@@ -4,7 +4,7 @@ from sqlalchemy import DateTime, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
-class AeroBaseModel(DeclarativeBase):
+class Base(DeclarativeBase):
     pass
 
 
