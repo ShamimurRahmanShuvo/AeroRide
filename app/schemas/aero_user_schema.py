@@ -1,18 +1,21 @@
 from __future__ import annotations
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, List
-from datetime import datetime
+from typing import Optional
+
+from app.models.aero_enums import UserRole
+from app.schemas.aero_base_schema import TimestampSchema
 
 
-class RegisterUserSchema(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
-    email: Optional[EmailStr] = None
-    password_hash: str = Field(..., min_length=8)
-    roles: Optional[List[str]] = ["user"]
+class UserCreateSchema(BaseModel):
+    first_name: str = Field(..., min_length=1, max_length=100)
+    last_name: str = Field(..., min_length=1, max_length=100)
+    email: EmailStr
+    phone_number: str = Field(..., min_length=10, max_length=20)
+    password: str = Field(..., min_length=8)
 
 
-class LoginUserSchema(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
+class UserLoginSchema(BaseModel):
+    email: EmailStr
     password: str = Field(..., min_length=8)
 
 
@@ -22,47 +25,10 @@ class TokenResponseSchema(BaseModel):
     expires_in: Optional[int] = None
 
 
-class UserProfileSchema(BaseModel):
-    user_id: int
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    date_of_birth: Optional[datetime] = None
-    phone_number: Optional[str] = None
-    address: Optional[str] = None
-    city: Optional[str] = None
-    province: Optional[str] = None
-    country: Optional[str] = None
-    postal_code: Optional[str] = None
-    profile_picture_url: Optional[str] = None
-
-    class Config:
-        from_attributes = True
-
-
-class CurrentUserResponseSchema(BaseModel):
-    id: int
-    username: str
-    email: Optional[EmailStr] = None
-    is_active: bool
-    is_varified: bool
-    created_at: datetime
-    updated_at: datetime
-    roles: List[str]
-    profile: Optional[UserProfileSchema] = None
-
-
-class RoleResponseSchema(BaseModel):
-    id: int
-    name: str
-
-    class Config:
-        from_attributes = True
-
-
-class RoleRequestSchema(BaseModel):
-    name: str = Field(..., min_length=3, max_length=50)
-
-
-class UserRoleAssignmentSchema(BaseModel):
-    user_id: int
-    role_id: int
+class UserResponseSchema(TimestampSchema):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone_number: str
+    role: UserRole
+    is_verified: bool
