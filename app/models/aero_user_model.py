@@ -1,27 +1,27 @@
-from sqlalchemy import Column, Integer, String, Boolean, Text, DateTime, ForeignKey, UniqueConstraint
-from sqlalchemy.orm import relationship
-from datetime import datetime
-from app.core.database import Base
+from sqlalchemy import String, Boolean, Enum
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+
+from app.models.aero_base_model import Base, TimestampMixin, UUIDMixin
+from app.models.aero_enums import UserRole
 
 
-class AeroUser(Base):
-    __tablename__ = "aero_users"
+class User(UUIDMixin, TimestampMixin, Base):
+    __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50), unique=True, nullable=False)
-    email = Column(String(100), unique=True, nullable=False)
-    password_hash = Column(String(255), nullable=False)
+    first_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)
+    phone_number: Mapped[str] = mapped_column(String(20), unique=True, index=True, nullable=False)
+    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    role: Mapped[UserRole] = mapped_column(Enum(UserRole), nullable=False)
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    is_active = Column(Boolean, default=True)
-    is_varified = Column(Boolean, default=False)
-
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    roles = relationship("UserRole", back_populates="users")
-    profiles = relationship("UserProfile", back_populates="user", uselist=False)
+    driver_profile = relationship("Driver", back_populates="user", uselist=False)
+    customer_bookings = relationship("Booking", back_populates="customer", foreign_keys="Booking.customer_id")
+    notifications = relationship("Notification", back_populates="user")
 
 
+"""
 class Role(Base):
     __tablename__ = "roles"
 
@@ -67,3 +67,4 @@ class UserProfile(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     user = relationship("AeroUser", back_populates="profiles")
+"""

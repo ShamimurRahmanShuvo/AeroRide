@@ -1,30 +1,16 @@
-from __future__ import annotations
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, List
-from datetime import datetime
+from pydantic import BaseModel, Field
+from .aero_base_schema import TimestampSchema
 
 
-class AeroAirportRegisterSchema(BaseModel):
-    id: int
-    name: str
-    code: str
-    city: str
-    country: str
-    timezone: str
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        from_attributes = True
+class AirportCreateSchema(BaseModel):
+    name: str = Field(..., example="John F. Kennedy International Airport")
+    code: str = Field(..., example="JFK")
+    city: str = Field(..., example="New York")
+    country: str = Field(..., example="USA")
 
 
-class AeroAirportResponseSchema(BaseModel):
-    name: str
-    code: str
-    city: str
-    country: str
-    timezone: str
-
-    class Config:
-        from_attributes = True
-    
+class AirportResponseSchema(TimestampSchema):
+    name: str = Field(..., example="John F. Kennedy International Airport")
+    code: str = Field(..., example="JFK")
+    city: str = Field(..., example="New York")
+    country: str = Field(..., example="USA")
