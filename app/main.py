@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 
-from app.core.database import Base, get_engine
+from app.core.database import get_engine
 from app.core.auth import create_demo_admin
+import app.models
+from app.models.aero_base_model import Base
 
 from app.routes.aero_user_routes import router as aero_user_router
 from app.routes.aero_admin_routes import router as aero_admin_router

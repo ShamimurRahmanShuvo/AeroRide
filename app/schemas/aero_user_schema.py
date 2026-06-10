@@ -7,6 +7,7 @@ from app.schemas.aero_base_schema import TimestampSchema
 
 
 class UserCreateSchema(BaseModel):
+    username: str = Field(..., min_length=3, max_length=50)
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=100)
     email: EmailStr
@@ -26,6 +27,7 @@ class TokenResponseSchema(BaseModel):
 
 
 class UserResponseSchema(TimestampSchema):
+    username: str
     first_name: str
     last_name: str
     email: EmailStr

@@ -13,7 +13,7 @@ class Driver(Base, UUIDMixin, TimestampMixin):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     user = relationship("User", back_populates="driver_profile")
-    vehicles = relationship("Vehicle", back_populates="driver", uselist=False)
+    vehicle = relationship("Vehicle", back_populates="driver", uselist=False)
     bookings = relationship("Booking", back_populates="driver")
     availability_slots = relationship("DriverAvailability", back_populates="driver")
     documents = relationship("DriverDocument", back_populates="driver")

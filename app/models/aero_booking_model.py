@@ -24,7 +24,7 @@ class Booking(Base, UUIDMixin, TimestampMixin):
     price: Mapped[float] = mapped_column(Numeric(10, 2))
     status: Mapped[BookingStatus] = mapped_column(Enum(BookingStatus), default=BookingStatus.PENDING)
 
-    rider = relationship("User", foreign_keys=[customer_id], back_populates="customer_bookings")
+    customer = relationship("User", foreign_keys=[customer_id], back_populates="customer_bookings")
     driver = relationship("Driver", foreign_keys=[driver_id], back_populates="bookings")
     airport = relationship("Airport", back_populates="bookings")
     payment = relationship("Payment", back_populates="booking", uselist=False)

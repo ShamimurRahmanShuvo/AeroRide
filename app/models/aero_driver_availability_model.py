@@ -8,8 +8,8 @@ class DriverAvailability(Base, TimestampMixin, UUIDMixin):
     __tablename__ = "driver_availability"
 
     driver_id: Mapped[int] = mapped_column(ForeignKey("drivers.id"), nullable=False)
-    start_time: Mapped[DateTime] = mapped_column(nullable=True)
-    end_time: Mapped[DateTime] = mapped_column(nullable=True)
+    start_time: Mapped[DateTime] = mapped_column(DateTime, nullable=True)
+    end_time: Mapped[DateTime] = mapped_column(DateTime, nullable=True)
     is_available: Mapped[bool] = mapped_column(default=True)
 
     driver = relationship("Driver", back_populates="availability_slots")

@@ -9,7 +9,7 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.models.aero_user_model import AeroUser, Role, UserRole
+from app.models.aero_user_model import User
 
 load_dotenv()
 
@@ -59,7 +59,7 @@ def decode_access_token(token: str) -> Optional[dict]:
         )
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> AeroUser:
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
     """Get the current user from the JWT token."""
     try:
         payload = decode_access_token(token)
@@ -72,7 +72,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Could not validate credentials / token is invalid",
                             headers={"WWW-Authenticate": "Bearer"},)
-    user = db.query(AeroUser).filter(AeroUser.username == username).first()
+    user = db.query(User).filter(User.username == username).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Could not validate credentials / user not found",
@@ -82,13 +82,11 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
 def require_role(*allowed_roles: str):
     """Dependency to require a specific role for access."""
-    def role_dependency(current_user: AeroUser = Depends(get_current_user)):
-        user_roles = [user_role.roles.name for user_role in current_user.roles if user_role.roles]
-        if not any(role in allowed_roles for role in user_roles):
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
-                                detail="You do not have permission to access this resource",)
+    def role_dependency(current_user: User = Depends(get_current_user)):
+        user_roles = {role.name for role in current_user.roles}
+        if not any(role in user_roles for role in allowed_roles):
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Insufficient permissions")
         return current_user
-
     return role_dependency
 
 
@@ -98,21 +96,17 @@ def create_demo_admin():
     admin_username = "admin"
     admin_password = "admin123"
     admin_email = "admin@aeroride.ca"
-    existing_admin = db.query(AeroUser).filter(AeroUser.username == admin_username).first()
+    existing_admin = db.query(User).filter(User.username == admin_username).first()
     if not existing_admin:
         hashed_password = hash_password(admin_password)
-        admin_user = AeroUser(username=admin_username, password_hash=hashed_password, email=admin_email)
+        admin_user = User(
+            username=admin_username,
+            first_name="Admin",
+            last_name="User",
+            password_hash=hashed_password,
+            email=admin_email,
+            phone_number="1234567890",
+            role="admin")
         db.add(admin_user)
         db.commit()
         db.refresh(admin_user)
-
-        # Create admin role
-        admin_role = Role(name="admin")
-        db.add(admin_role)
-        db.commit()
-        db.refresh(admin_role)
-
-        # Assign admin role to the user
-        user_role = UserRole(user_id=admin_user.id, role_id=admin_role.id)
-        db.add(user_role)
-        db.commit()

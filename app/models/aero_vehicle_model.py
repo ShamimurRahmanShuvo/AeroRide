@@ -8,7 +8,7 @@ from app.models.aero_enums import VehicleType
 class Vehicle(Base, UUIDMixin, TimestampMixin):
     __tablename__ = 'vehicles'
 
-    driver_id: Mapped[str] = mapped_column(ForeignKey("aero_drivers.id"), nullable=False, unique=True)
+    driver_id: Mapped[str] = mapped_column(ForeignKey("drivers.id"), nullable=False, unique=True)
     make: Mapped[str] = mapped_column(String(50), nullable=False)
     model: Mapped[str] = mapped_column(String(50), nullable=False)
     year: Mapped[int] = mapped_column(Integer, nullable=False)
